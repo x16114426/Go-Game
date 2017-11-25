@@ -17,7 +17,7 @@ public class Go extends Application {
 	// overridden start method
 	public void start(Stage primaryStage) {
 		
-		primaryStage.setTitle("Go game");
+		primaryStage.setTitle("Go Game");
 		primaryStage.setScene(new Scene(sp_mainlayout,800,800));
 		primaryStage.show();
 
