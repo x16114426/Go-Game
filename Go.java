@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.BoarderPane;
 import javafx.stage.Stage;
 
 //class defnition for reversi game
@@ -10,8 +11,9 @@ public class Go extends Application {
 		
 		
 		sp_mainlayout = new StackPane();
+		borderPane_bp = new BorderPane();
 		
-
+		sp_mainlayout.getChildren().add(boarderPane);
 	}
 	
 	// overridden start method
@@ -19,6 +21,7 @@ public class Go extends Application {
 		
 		primaryStage.setTitle("Go Game");
 		primaryStage.setScene(new Scene(sp_mainlayout,800,800));
+
 		primaryStage.show();
 
 	}
