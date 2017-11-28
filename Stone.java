@@ -9,8 +9,8 @@ class Stone extends Group {
 
 // private fields of the class
 private Line l1, l2; // lines for drawing the X piece
-private Ellipse e; // ellipse for rendering the O piece
-private int type; // maintain a copy of the piece type we have
+private Ellipse stone; // ellipse for rendering the O piece
+private int player; // maintain a copy of the piece type we have
 private Translate pos; // translate that set the position of this piece
 // constructor for the class
 	
@@ -26,5 +26,27 @@ super.resize(width, height);
 // overridden version of the relocate method
 public void relocate(double x, double y) {
 }
+public int getWBStone() {
+	// NOTE: this is to keep the compiler happy until you get to this point
+	
+	return player;
+}
 
+//method that will set the piece type
+	public void setWBStone(final int type) {
+		player=type;
+		if(player == 1 ){
+			stone.setFill(Color.WHITE);
+			}
+			
+			else if(player == 2){
+				stone.setFill(Color.BLACK);
+				
+			}
+			
+			else if(player == 0){
+			stone.setFill(Color.TRANSPARENT);
+
+		}
+	}
 }
