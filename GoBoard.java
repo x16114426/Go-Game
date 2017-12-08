@@ -28,7 +28,7 @@ import javafx.scene.transform.Translate;
 		}
 		
 		// public method that will try to place a piece in the given x,y coordinate
-		public void placePiece(final double x, final double y) {
+		public void placeStone(final double x, final double y) {
 			  // figure out which cell the current player has clicked on
 			  final int cellx = (int) (x / cell_width);
 			  final int celly = (int) (y / cell_height);
@@ -38,22 +38,32 @@ import javafx.scene.transform.Translate;
 			    return;
 
 			  // if there is a stone already placed then return and do nothing
-			  if(render[cellx][celly].getWBStone() != 0)
+			  if(render[cellx][celly].getStone() != 0)
 			    return;
+			  
+			  
+			  //---- to create a new render on the position of the board
+			  
+			  //--- add the stone to the board (getCHIDLREN METHOD)
+			  
+			  
 
 			  // determine what pieces surround the current piece. if there is no opposing
 			  // pieces then a valid move cannot be made.
 			  determineSurrounding(cellx, celly);
-			  if(!adjacentOpposingPiece())
-			    return;
-
-			  // see if a reverse can be made in any direction if none can be made then return
-			  if(!determineReverse(cellx, celly))
-			    return;
-
-			  // at this point we have done all the checks and they have passed so now we can place
-			  // the piece and perform the reversing also check if the game has ended
-			  placeAndReverse(cellx, celly);
+			  if(liberties()==false) {
+				  return;
+			  }
+//			  if(!adjacentOpposingPiece())
+//			    return;
+//
+//			  // see if a reverse can be made in any direction if none can be made then return
+//			  if(!determineReverse(cellx, celly))
+//			    return;
+//
+//			  // at this point we have done all the checks and they have passed so now we can place
+//			  // the piece and perform the reversing also check if the game has ended
+//			  placeAndReverse(cellx, celly);
 
 			  // if we get to this point then a successful move has been made so swap the
 			  // players and update the scores
@@ -72,6 +82,15 @@ import javafx.scene.transform.Translate;
 
 		
 		
+		private boolean liberties() {
+			if(surrounding[0][1]==0)
+				return true;
+			
+			else if(surrounding[2][1]==0)
+				return true;
+			return false;
+		}
+
 		// overridden version of the resize method to give the board the correct size
 		@Override
 		public void resize(double width, double height) {
@@ -91,10 +110,10 @@ import javafx.scene.transform.Translate;
 		// public method for resetting the game
 		public void resetGame() {
 			resetRenders();
-			render[3][3].setWBStone(1);
-			render[4][4].setWBStone(1);
-			render[3][4].setWBStone(2);
-			render[4][3].setWBStone(2);
+			render[2][3].setStone(1);
+			render[3][4].setStone(1);
+			render[3][3].setStone(2);
+			render[2][4].setStone(2);
 			
 			in_play = true;
 			current_player = 2;
@@ -108,7 +127,7 @@ import javafx.scene.transform.Translate;
 		private void resetRenders() {
 			for (int i = 0; i < 7; i++) { 
 				for (int j = 0; j < 7; j++) {
-					render[i][j].setWBStone(EMPTY);
+					render[i][j].setStone(EMPTY);
 			System.out.printf("\n %d %d", i, j); } }
 
 		}
@@ -116,7 +135,7 @@ import javafx.scene.transform.Translate;
 		// private method that will initialise the background and the lines
 		private void initialiseLinesBackground() {
 			background = new Rectangle();
-			background.setFill(Color.CYAN);
+			background.setFill(Color.SANDYBROWN);
 			getChildren().add(background);
 			
 			for (int j =0; j < 7; j++) {
@@ -146,24 +165,23 @@ import javafx.scene.transform.Translate;
 		
 		// private method for resizing and relocating the horizontal lines
 		private void horizontalResizeRelocate(final double width) {
-			
-			for(int j=1;j<7;j++) {
-			horizontal_t[j].setX(0.5*cell-cell_height);
-			horizontal_t[j].setY(0.5*cell-cell_width/2);
-				horizontal[j].setEndY(width);
+			for(int j=0; j<7; j++) {
+				horizontal_t[j].setY((j + .5) * cell_height);
+				horizontal[j].setEndX(width-cell_width/1.4);
+				horizontal[j].setStartX(cell_width/3.2);
 			}
 
 		}
 		
 		// private method for resizing and relocating the vertical lines
 		private void verticalResizeRelocate(final double height) {
-			for(int j=1;j<7;j++) {
-				vertical_t[j].setX(0.5*cell-cell_width);
-				vertical[j].setEndY(height);
+			for(int j=0; j<7; j++) {
+				vertical_t[j].setX((j + .3) *cell_width);
+				vertical[j].setEndY(height-cell_height/2);
+				vertical[j].setStartY(cell_height/2);
 				
 			}
-
-		}
+			}
 		
 		// private method for swapping the players
 		private void swapPlayers() {
@@ -199,14 +217,14 @@ import javafx.scene.transform.Translate;
 		private void determineSurrounding(final int x, final int y) {
 			System.out.printf("Determine surrounding\n %d, %d", x, y);
 			try {
-				surrounding[x-1][y] = render[x-1][y].getWBStone();
-				surrounding[x+1][y] = render[x+1][y].getWBStone();
-				surrounding[x-1][y-1] = render[x-1][y-1].getWBStone();
-				surrounding[x+1][y-1] = render[x+1][y-1].getWBStone();
-				surrounding[x][y-1] = render[x][y-1].getWBStone();
-				surrounding[x+1][y+1] = render[x+1][y+1].getWBStone();
-				surrounding[x][y+1] = render[x][y+1].getWBStone();
-				surrounding[x-1][y+1] = render[x-1][y+1].getWBStone();
+				surrounding[x-1][y] = render[x-1][y].getStone();
+				surrounding[x+1][y] = render[x+1][y].getStone();
+				surrounding[x-1][y-1] = render[x-1][y-1].getStone();
+				surrounding[x+1][y-1] = render[x+1][y-1].getStone();
+				surrounding[x][y-1] = render[x][y-1].getStone();
+				surrounding[x+1][y+1] = render[x+1][y+1].getStone();
+				surrounding[x][y+1] = render[x][y+1].getStone();
+				surrounding[x-1][y+1] = render[x-1][y+1].getStone();
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -214,43 +232,43 @@ import javafx.scene.transform.Translate;
 		
 		// private method for determining if a reverse can be made will update the can_reverse
 		// array to reflect the answers will return true if a single reverse is found
-		private boolean determineReverse(final int x, final int y) {
-			// NOTE: this is to keep the compiler happy until you get to this part
-			return false;
-		}
+//		private boolean determineReverse(final int x, final int y) {
+//			// NOTE: this is to keep the compiler happy until you get to this part
+//			return false;
+//		}
 		
 		// private method for determining if a reverse can be made from a position (x,y) for
 		// a player piece in the given direction (dx,dy) returns true if possible
 		// assumes that the first piece has already been checked
-		private boolean isReverseChain(final int x, final int y, final int dx, final int dy, final int player) {
-			// NOTE: this is to keep the compiler happy until you get to this part
-			return false;
-		}
+//		private boolean isReverseChain(final int x, final int y, final int dx, final int dy, final int player) {
+//			// NOTE: this is to keep the compiler happy until you get to this part
+//			return false;
+//		}
 		
 		// private method for determining if any of the surrounding pieces are an opposing
 		// piece. if a single one exists then return true otherwise false
-		private boolean adjacentOpposingPiece() {
-			
-			return false; 
-		}
-		
-		// private method for placing a piece and reversing pieces
-		private void placeAndReverse(final int x, final int y) {
-					
-		}
+//		private boolean adjacentOpposingPiece() {
+//			
+//			return false; 
+//		}
+//		
+//		// private method for placing a piece and reversing pieces
+//		private void placeAndReverse(final int x, final int y) {
+//					
+//		}
 		
 		// private method to reverse a chain
-		private void reverseChain(final int x, final int y, final int dx, final int dy) {
-			
-		}
+//		private void reverseChain(final int x, final int y, final int dx, final int dy) {
+//			
+//		}
 		
 		// private method for getting a piece on the board. this will return the board
 		// value unless we access an index that doesnt exist. this is to make the code
 		// for determing reverse chains much easier
-		private int getWBStone(final int x, final int y) {
+		private int getStone(final int x, final int y) {
 			// NOTE: this is to keep the compiler happy until you get to this point
 			try {
-				return render[x][y].getWBStone();	
+				return render[x][y].getStone();	
 			}catch (Exception e) {
 				return -1;
 			}		
